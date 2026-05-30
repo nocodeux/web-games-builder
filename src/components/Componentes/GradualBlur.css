@@ -1,0 +1,19 @@
+.gradual-blur-container {
+  z-index: 10;
+  overflow: hidden;
+}
+
+.gradual-blur-layer {
+  flex-shrink: 0;
+  flex-grow: 0;
+  width: 100%;
+}
+
+@keyframes gradual-blur-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.gradual-blur-animated {
+  animation: gradual-blur-pulse 3s ease-in-out infinite;
+}

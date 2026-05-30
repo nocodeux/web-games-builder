@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project Preview</title>
+<style>
+/* Reset and Base */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #000; overflow: hidden; font-family: 'Courier New', 'Fira Code', 'Menlo', monospace; font-size: 14px; color: #fff; }
+
+/* Themes */
+.theme-nano { --bg: #000000; --panel-bg: #000000; --border: #00aa00; --text: #00ff00; --text-dim: #008800; --accent: #ffff00; --selected: #004400; --input-bg: #001100; }
+.theme-classic { --bg: #000080; --panel-bg: #c0c0c0; --border: #ffffff; --text: #000000; --text-dim: #444444; --accent: #ffff00; --selected: #000044; --input-bg: #ffffff; }
+.theme-toxic { --bg: #0a0a0a; --panel-bg: #1a1a1a; --border: #ff00ff; --text: #00ffff; --text-dim: #008888; --accent: #ffff00; --selected: #330033; --input-bg: #000000; }
+.theme-ocean { --bg: #001a33; --panel-bg: #002b4d; --border: #00ccff; --text: #e6f7ff; --text-dim: #80dfff; --accent: #ffcc00; --selected: #003d66; --input-bg: #001122; }
+
+body.theme-nano { background: var(--bg); color: var(--text); }
+body.theme-classic { background: var(--bg); color: var(--text); }
+body.theme-toxic { background: var(--bg); color: var(--text); }
+body.theme-ocean { background: var(--bg); color: var(--text); }
+
+/* Layout */
+.screen-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; display: none; padding: 20px; overflow: auto; }
+.screen-container.active { display: block; }
+
+/* Components */
+.retro-window { border: 2px solid var(--border); background: var(--panel-bg); display: flex; flex-direction: column; margin-bottom: 10px; }
+.retro-window-titlebar { background: var(--border); padding: 2px 8px; display: flex; justify-content: space-between; align-items: center; }
+.retro-window-title { color: var(--bg); font-weight: bold; font-size: 12px; }
+.retro-window-content { padding: 12px; flex: 1; display: flex; gap: 8px; }
+
+.retro-label { font-size: 13px; color: var(--text); margin: 4px 0; }
+.retro-input { background: var(--input-bg); border: 1px solid var(--border); color: var(--text); padding: 4px 8px; font-family: inherit; font-size: 13px; width: 100%; }
+.retro-button { background: var(--panel-bg); border: 2px solid var(--border); color: var(--text); padding: 6px 16px; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: bold; transition: all 0.1s; }
+.retro-button:active { transform: translate(1px, 1px); }
+
+.retro-table { width: 100%; border-collapse: collapse; font-size: 12px; background: var(--input-bg); }
+.retro-table th { background: var(--border); color: var(--bg); padding: 4px 8px; text-align: left; }
+.retro-table td { border: 1px solid var(--border); padding: 4px 8px; color: var(--text); }
+
+/* Helpers */
+.hidden { display: none !important; }
+</style>
+</head>
+<body id="preview-body">
+<div id="app-root"></div>
+
+<script>
+function renderApp() {
+  const params = new URLSearchParams(window.location.search);
+  const projectId = params.get('id');
+  if (!projectId) {
+    document.getElementById('app-root').innerHTML = '<div style="padding: 20px;">No project ID specified.</div>';
+    return;
+  }
+
+  const projectDataRaw = localStorage.getItem(`nanostudio_project_${projectId}`);
+  if (!projectDataRaw) {
+    document.getElementById('app-root').innerHTML = '<div style="padding: 20px;">Project not found in LocalStorage.</div>';
+    return;
+  }
+
+  const project = JSON.parse(projectDataRaw);
+  document.body.className = project.theme || 'theme-nano';
+  document.title = project.name || 'Preview';
+
+  const root = document.getElementById('app-root');
+  root.innerHTML = '';
+
+  project.screens.forEach(screen => {
+    const screenDiv = document.createElement('div');
+    screenDiv.className = `screen-container ${screen.id === project.currentScreenId ? 'active' : ''}`;
+    screenDiv.id = screen.id;
+
+    // Render Rows/Components
+    screen.rows.forEach(row => {
+      const rowDiv = document.createElement('div');
+      rowDiv.style.display = 'flex';
+      rowDiv.style.flexDirection = row.layout?.direction || 'row';
+      rowDiv.style.gap = (row.layout?.gap || 8) + 'px';
+      rowDiv.style.marginBottom = (row.layout?.gap || 8) + 'px';
+      rowDiv.style.justifyContent = row.layout?.justify || 'flex-start';
+      rowDiv.style.alignItems = row.layout?.align || 'stretch';
+
+      row.children.forEach(child => {
+        const component = renderComponent(child, project);
+        if (component) rowDiv.appendChild(component);
+      });
+      screenDiv.appendChild(rowDiv);
+    });
+
+    root.appendChild(screenDiv);
+  });
+}
+
+function renderComponent(comp, project) {
+  if (comp.type === 'Window') {
+    const win = document.createElement('div');
+    win.className = 'retro-window';
+    win.style.width = typeof comp.width === 'string' && comp.width.includes('%') ? comp.width : comp.width + 'px';
+    
+    const titlebar = document.createElement('div');
+    titlebar.className = 'retro-window-titlebar';
+    titlebar.innerHTML = `<span class="retro-window-title">${comp.title || 'Window'}</span>`;
+    
+    if (comp.showClose) {
+      const closeBtn = document.createElement('button');
+      closeBtn.style.cssText = 'background:none;border:none;color:inherit;cursor:pointer;font-weight:bold;padding:0 4px;';
+      closeBtn.innerText = '[X]';
+      closeBtn.onclick = () => {
+        if (comp.closeNextScreenId) navigateTo(comp.closeNextScreenId);
+      };
+      titlebar.appendChild(closeBtn);
+    }
+    
+    const content = document.createElement('div');
+    content.className = 'retro-window-content';
+    content.style.flexDirection = comp.layout?.direction || 'column';
+    content.style.gap = (comp.layout?.gap || 8) + 'px';
+    content.style.justifyContent = comp.layout?.justify || 'flex-start';
+    content.style.alignItems = comp.layout?.align || 'stretch';
+    
+    if (comp.children) {
+      comp.children.forEach(child => {
+        const c = renderComponent(child, project);
+        if (c) content.appendChild(c);
+      });
+    }
+    
+    win.appendChild(titlebar);
+    win.appendChild(content);
+    return win;
+  }
+
+  if (comp.type === 'Label') {
+    const el = document.createElement('div');
+    el.className = 'retro-label';
+    el.innerText = comp.text || 'Label';
+    return el;
+  }
+
+  if (comp.type === 'Input') {
+    const el = document.createElement('input');
+    el.className = 'retro-input';
+    el.placeholder = comp.placeholder || '';
+    el.value = comp.value || '';
+    return el;
+  }
+
+  if (comp.type === 'Button') {
+    const el = document.createElement('button');
+    el.className = 'retro-button';
+    el.innerText = comp.text || 'Button';
+    el.onclick = () => {
+      if (comp.action === 'screen' && comp.targetScreenId) {
+        navigateTo(comp.targetScreenId);
+      }
+    };
+    return el;
+  }
+
+  if (comp.type === 'Table') {
+    const el = document.createElement('table');
+    el.className = 'retro-table';
+    const tableName = comp.tableName;
+    const tableDef = project.database?.tables?.find(t => t.name === tableName);
+    const data = project.database?.data?.[tableName] || [];
+    
+    if (tableDef) {
+      const thead = document.createElement('thead');
+      const headerRow = document.createElement('tr');
+      tableDef.columns.forEach(col => {
+        const th = document.createElement('th');
+        th.innerText = col.name;
+        headerRow.appendChild(th);
+      });
+      thead.appendChild(headerRow);
+      el.appendChild(thead);
+
+      const tbody = document.createElement('tbody');
+      data.forEach(row => {
+        const tr = document.createElement('tr');
+        tableDef.columns.forEach(col => {
+          const td = document.createElement('td');
+          td.innerText = row[col.name] || '';
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      el.appendChild(tbody);
+    }
+    return el;
+  }
+
+  return null;
+}
+
+function navigateTo(screenId) {
+  document.querySelectorAll('.screen-container').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById(screenId);
+  if (target) target.classList.add('active');
+}
+
+window.onload = renderApp;
+// Listen for changes in other tabs (if the builder is open in another tab)
+window.onstorage = renderApp;
+</script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+{
+  "name": "web-games-builder",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "server": "node --watch src/server/index.js",
+    "dev:full": "concurrently -n \"server,vite\" -c \"cyan,magenta\" \"npm run server\" \"npm run dev\"",
+    "db:migrate": "node src/server/db/migrate.js",
+    "build:runtime": "vite build --config vite.runtime.config.js",
+    "build": "npm run build:runtime && vite build",
+    "start": "NODE_ENV=production node src/server/index.js",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1046.0",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^8.5.2",
+    "gif.js": "^0.2.0",
+    "jsonwebtoken": "^9.0.3",
+    "jszip": "^3.10.1",
+    "multer": "^2.1.1",
+    "pg": "^8.20.0",
+    "react": "^18.2.0",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
+    "react-dom": "^18.2.0",
+    "sql.js": "^1.8.0",
+    "ws": "^8.21.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.0.0",
+    "concurrently": "^9.1.2",
+    "vite": "^4.0.0"
+  }
+}
