@@ -2035,18 +2035,7 @@ function App() {
         if (data.builderName) setBuilderName(data.builderName);
         if (data.externalApis) setExternalApis(data.externalApis);
         if (data.theme) setTheme(data.theme);
-        if (data.tutorial) {
-          const cfg = normalizeTutorialConfig(data.tutorial);
-          setTutorialConfig(cfg);
-          if (cfg.visitLimit > 0 && currentUser.role !== 'admin') {
-            const visitKey = `nanostudio_tutorial_visits:${currentUser.userId}`;
-            const visits = parseInt(localStorage.getItem(visitKey) || '0', 10);
-            if (visits < cfg.visitLimit) {
-              setTutorialActive(true);
-              localStorage.setItem(visitKey, String(visits + 1));
-            }
-          }
-        }
+        if (data.tutorial) setTutorialConfig(normalizeTutorialConfig(data.tutorial));
       })
       .catch(err => console.error('Error loading settings:', err))
       .finally(() => { settingsLoaded.current = true; });
