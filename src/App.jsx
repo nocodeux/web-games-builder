@@ -2035,7 +2035,18 @@ function App() {
         if (data.builderName) setBuilderName(data.builderName);
         if (data.externalApis) setExternalApis(data.externalApis);
         if (data.theme) setTheme(data.theme);
-        if (data.tutorial) setTutorialConfig(normalizeTutorialConfig(data.tutorial));
+        if (data.tutorial) {
+          const cfg = normalizeTutorialConfig(data.tutorial);
+          setTutorialConfig(cfg);
+          if (cfg.visitLimit > 0 && currentUser.role !== 'admin') {
+            const visitKey = `nanostudio_tutorial_visits:${currentUser.userId}`;
+            const visits = parseInt(localStorage.getItem(visitKey) || '0', 10);
+            if (visits < cfg.visitLimit) {
+              setTutorialActive(true);
+              localStorage.setItem(visitKey, String(visits + 1));
+            }
+          }
+        }
       })
       .catch(err => console.error('Error loading settings:', err))
       .finally(() => { settingsLoaded.current = true; });
@@ -4414,9 +4425,9 @@ ${(() => {
                   </div>
                 </div>
 
-                {/* ── Tutorial tab — tabIndex 3 (super admin only) ─── */}
+                {/* ── Tutorial tab — tabIndex 2 (super admin only) ─── */}
                 {isSuperAdmin && (
-                  <div tabIndex={3} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                  <div tabIndex={2} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
 
                     <div style={{ border: '1px solid var(--border)', padding: 16, position: 'relative' }}>
                       <div style={{ position: 'absolute', top: '-10px', left: '10px', background: 'var(--bg)', padding: '0 5px', fontSize: '11px', color: 'var(--accent)' }}>Tutorial Controls</div>
