@@ -9,6 +9,8 @@ import { assetsRouter }     from './routes/assets.js';
 import { publishRouter }    from './routes/publish.js';
 import { migrateRouter }    from './routes/migrate.js';
 import { mobileRouter }     from './routes/mobile.js';
+import { docsRouter }       from './routes/docs.js';
+import { renderDocsPage }   from './docsPage.js';
 import { requireAuth }      from './middleware/auth.js';
 import { runSchema, isAvailable, query } from './db/index.js';
 import { createMultiplayerServer } from './routes/multiplayer.js';
@@ -54,6 +56,12 @@ app.use('/api/publish',  requireAuth, publishRouter);
 app.use('/api/settings', settingsRouter);
 app.use('/api/migrate',  migrateRouter);
 app.use('/api/mobile',   mobileRouter);
+app.use('/api/docs',     docsRouter);
+
+app.get('/docs', (req, res) => {
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.send(renderDocsPage());
+});
 
 // ─── Published page route: /:username/:slug ───────────────────────────────────
 app.get('/:username/:slug', async (req, res, next) => {

@@ -1,0 +1,12 @@
+{
+  "type": "Timer",
+  "description": "Non-visual timer component that triggers events at a fixed interval. Used for auto-advancing screens or triggering timed effects.",
+  "category": "logic",
+  "canHaveChildren": false,
+  "defaultSizing": { "widthMode": "hug", "heightMode": "hug" },
+  "props": {
+    "interval": { "type": "number", "default": 1000, "description": "Timer interval in milliseconds" },
+    "enabled": { "type": "boolean", "default": false, "description": "Whether the timer is running" },
+    "sizing": { "$ref": "schemas/component-node.schema.json#/definitions/SizingConfig" }
+  }
+}

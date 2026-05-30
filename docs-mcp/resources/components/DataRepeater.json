@@ -1,0 +1,65 @@
+{
+  "type": "DataRepeater",
+  "description": "Renders a template of child components once for each record in a database table. Children can use {{fieldName}} in text props or set dataField to bind to columns. This is how you build lists, feeds, and grids from DB data.",
+  "category": "data",
+  "canHaveChildren": true,
+  "defaultSizing": { "widthMode": "fill", "heightMode": "hug" },
+  "props": {
+    "tableName": { "type": "string", "required": true, "description": "DB table to iterate over" },
+    "filterField": { "type": "string", "default": "", "description": "Field to filter records by" },
+    "filterValue": { "type": "string", "default": "", "description": "Filter value or {{template}}. Only records where filterField=filterValue are shown." },
+    "layout": {
+      "type": "LayoutConfig",
+      "description": "Flex layout that controls how repeated items are arranged (column for list, row+wrap for grid)",
+      "default": { "direction": "column", "gap": 8, "align": "stretch", "justify": "flex-start" }
+    },
+    "sizing": { "$ref": "schemas/component-node.schema.json#/definitions/SizingConfig" }
+  },
+  "notes": [
+    "Children receive the current record as context. Use {{fieldName}} in Text.text or dataField in any component.",
+    "For a card list: layout.direction='column', gap=12, children=[Frame with nested Text components].",
+    "For a grid: layout.direction='row', layout.wrap=true, gap=8.",
+    "filterValue supports {{template}} — e.g. filterValue='{{category}}' when inside another DataRepeater.",
+    "The entire children array is cloned once per record."
+  ],
+  "examples": [
+    {
+      "description": "Blog post feed — vertical list of cards",
+      "json": {
+        "id": "repeater-posts",
+        "type": "DataRepeater",
+        "props": {
+          "tableName": "Posts",
+          "layout": { "direction": "column", "gap": 12, "align": "stretch", "justify": "flex-start" },
+          "sizing": { "widthMode": "fill", "heightMode": "hug" }
+        },
+        "children": [
+          {
+            "id": "frame-card",
+            "type": "Frame",
+            "props": {
+              "title": "POST",
+              "borderStyle": "single",
+              "layout": { "direction": "column", "gap": 6, "align": "flex-start", "justify": "flex-start", "paddingTop": 8, "paddingLeft": 8, "paddingRight": 8, "paddingBottom": 8 },
+              "sizing": { "widthMode": "fill", "heightMode": "hug" }
+            },
+            "children": [
+              {
+                "id": "txt-title",
+                "type": "Text",
+                "props": { "text": "{{Title}}", "fontSize": 14, "dataSourceType": "database", "dataField": "Title", "sizing": { "widthMode": "fill", "heightMode": "hug" } },
+                "children": []
+              },
+              {
+                "id": "txt-desc",
+                "type": "Text",
+                "props": { "text": "{{Description}}", "fontSize": 11, "textColor": "#999", "dataSourceType": "database", "dataField": "Description", "sizing": { "widthMode": "fill", "heightMode": "hug" } },
+                "children": []
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

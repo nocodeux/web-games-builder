@@ -1,0 +1,13 @@
+{
+  "type": "Line",
+  "description": "Horizontal divider line. Use as a visual separator between sections.",
+  "category": "display",
+  "canHaveChildren": false,
+  "defaultSizing": { "widthMode": "fill", "heightMode": "hug" },
+  "props": {
+    "thickness": { "type": "number", "default": 1, "description": "Line thickness in px" },
+    "lineStyle": { "type": "enum", "values": ["solid", "double", "dashed"], "default": "solid" },
+    "color": { "type": "color", "default": "", "description": "Line color (hex). Empty = theme --border var" },
+    "sizing": { "$ref": "schemas/component-node.schema.json#/definitions/SizingConfig" }
+  }
+}

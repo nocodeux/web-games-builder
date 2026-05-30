@@ -1,0 +1,13 @@
+{
+  "type": "Data",
+  "description": "Non-visual data connector. Attaches a database table, JSON endpoint, or API to the current screen context for other components to consume.",
+  "category": "data",
+  "canHaveChildren": false,
+  "defaultSizing": { "widthMode": "hug", "heightMode": "hug" },
+  "props": {
+    "tableName": { "type": "string", "description": "DB table to connect to" },
+    "dataSource": { "type": "enum", "values": ["sqlite", "json", "api"], "default": "sqlite", "description": "Data source type" },
+    "query": { "type": "string", "default": "", "description": "Query string or API endpoint path" },
+    "sizing": { "$ref": "schemas/component-node.schema.json#/definitions/SizingConfig" }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "Shape",
+  "description": "Colored geometric shape: rectangle, circle, or square. Useful for decorative elements, dividers, and status indicators.",
+  "category": "display",
+  "canHaveChildren": false,
+  "defaultSizing": { "widthMode": "fixed", "heightMode": "fixed" },
+  "props": {
+    "shapeType": { "type": "enum", "values": ["rectangle", "circle", "square"], "default": "rectangle" },
+    "width": { "type": "number", "default": 60, "description": "Width in px" },
+    "height": { "type": "number", "default": 40, "description": "Height in px" },
+    "fill": { "type": "boolean", "default": false, "description": "Fill the shape with bgColor (false = outline only)" },
+    "borderColor": { "type": "color", "default": "", "description": "Border/outline color" },
+    "bgColor": { "type": "color", "default": "", "description": "Fill color (used when fill=true)" },
+    "sizing": { "$ref": "schemas/component-node.schema.json#/definitions/SizingConfig" }
+  }
+}

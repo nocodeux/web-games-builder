@@ -1,0 +1,67 @@
+{
+  "type": "Form",
+  "description": "Form container that connects input fields to a database table. Children (TextBox, CheckBox, ComboBox, etc.) bind to columns via their 'dataField' prop. A Button with action='submit' saves the form data to the target table.",
+  "category": "data",
+  "canHaveChildren": true,
+  "defaultSizing": { "widthMode": "fill", "heightMode": "hug" },
+  "props": {
+    "sourceTable": { "type": "string", "default": "", "description": "DB table to READ initial values from. Leave empty for a create-only form." },
+    "filterField": { "type": "string", "description": "Filter field to select which record to load from sourceTable" },
+    "filterValue": { "type": "string", "description": "Filter value or {{template}}. Commonly set to a record ID." },
+    "targetTable": { "type": "string", "default": "", "description": "DB table to WRITE to when the form is submitted (Button action='submit')" },
+    "layout": {
+      "type": "LayoutConfig",
+      "description": "Flex layout for form fields",
+      "default": { "direction": "column", "gap": 8, "align": "stretch", "justify": "flex-start" }
+    },
+    "sizing": { "$ref": "schemas/component-node.schema.json#/definitions/SizingConfig" }
+  },
+  "notes": [
+    "Input/TextBox children must have 'dataField' set to the column name they bind to.",
+    "For a login form: sourceTable='Users', targetTable='Users', add TextBox(dataField='email') + TextBox(dataField='password', inputType='password') + Button(action='submit' or action='login').",
+    "For a create form: only set targetTable. Leave sourceTable empty.",
+    "For an edit form: set both sourceTable and filterField/filterValue to load the record, and targetTable to save it."
+  ],
+  "examples": [
+    {
+      "description": "Login form",
+      "json": {
+        "id": "form-login",
+        "type": "Form",
+        "props": {
+          "sourceTable": "Users",
+          "filterField": "",
+          "targetTable": "Users",
+          "layout": { "direction": "column", "gap": 12, "align": "stretch", "justify": "flex-start", "paddingTop": 16, "paddingLeft": 16, "paddingRight": 16, "paddingBottom": 16 },
+          "sizing": { "widthMode": "fill", "heightMode": "hug" }
+        },
+        "children": [
+          {
+            "id": "txt-form-title",
+            "type": "Text",
+            "props": { "text": "LOGIN", "fontSize": 18, "alignment": "center", "sizing": { "widthMode": "fill", "heightMode": "hug" } },
+            "children": []
+          },
+          {
+            "id": "input-email",
+            "type": "TextBox",
+            "props": { "label": "EMAIL", "placeholder": "user@example.com", "inputType": "email", "dataField": "email", "sizing": { "widthMode": "fill", "heightMode": "hug" } },
+            "children": []
+          },
+          {
+            "id": "input-pass",
+            "type": "TextBox",
+            "props": { "label": "PASSWORD", "inputType": "password", "dataField": "password", "sizing": { "widthMode": "fill", "heightMode": "hug" } },
+            "children": []
+          },
+          {
+            "id": "btn-login",
+            "type": "Button",
+            "props": { "text": "LOG IN", "action": "submit", "sizing": { "widthMode": "fill", "heightMode": "hug" } },
+            "children": []
+          }
+        ]
+      }
+    }
+  ]
+}

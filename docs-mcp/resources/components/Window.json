@@ -1,0 +1,50 @@
+{
+  "type": "Window",
+  "description": "Draggable window container with a title bar. Used for panels, dialogs, and card-like containers. Has optional close button and background image.",
+  "category": "layout",
+  "canHaveChildren": true,
+  "defaultSizing": { "widthMode": "fixed", "heightMode": "hug" },
+  "props": {
+    "title": { "type": "string", "default": "Window1", "description": "Title displayed in the window title bar" },
+    "width": { "type": "number", "default": 400, "description": "Width in px" },
+    "height": { "type": "number|string", "default": "", "description": "Height in px or empty for auto" },
+    "textColor": { "type": "color", "default": "" },
+    "bgColor": { "type": "color", "default": "", "description": "Window background color" },
+    "borderColor": { "type": "color", "default": "" },
+    "bgImage": { "type": "string", "default": "", "description": "Background image URL" },
+    "bgImageFit": { "type": "enum", "values": ["cover", "contain", "fill", "tile"], "default": "cover" },
+    "showClose": { "type": "boolean", "default": false, "description": "Show an [X] close button in the title bar" },
+    "closeNextScreenId": { "type": "string", "when": "showClose === true", "description": "Screen to navigate to on close, or '__close_window__' to just dismiss" },
+    "staggered": { "type": "boolean", "default": false, "description": "Animate as staggered/overlay style" },
+    "layout": {
+      "type": "LayoutConfig",
+      "default": { "direction": "row", "gap": 8, "align": "flex-start", "justify": "flex-start" }
+    },
+    "sizing": { "$ref": "schemas/component-node.schema.json#/definitions/SizingConfig" }
+  },
+  "examples": [
+    {
+      "description": "Info panel window",
+      "json": {
+        "id": "win-info",
+        "type": "Window",
+        "props": {
+          "title": "ABOUT",
+          "width": 320,
+          "showClose": true,
+          "closeNextScreenId": "__close_window__",
+          "layout": { "direction": "column", "gap": 8, "align": "flex-start", "justify": "flex-start", "paddingTop": 12, "paddingLeft": 12, "paddingRight": 12, "paddingBottom": 12 },
+          "sizing": { "widthMode": "fixed", "heightMode": "hug" }
+        },
+        "children": [
+          {
+            "id": "txt-about",
+            "type": "Text",
+            "props": { "text": "This is my retro app.", "fontSize": 12, "sizing": { "widthMode": "fill", "heightMode": "hug" } },
+            "children": []
+          }
+        ]
+      }
+    }
+  ]
+}

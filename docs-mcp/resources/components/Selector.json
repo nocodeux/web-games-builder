@@ -1,0 +1,57 @@
+{
+  "type": "Selector",
+  "aliases": ["ComboBox"],
+  "description": "Dropdown select. Options can come from a static list or from a database table. Can be bound to a Form field via dataField.",
+  "category": "input",
+  "canHaveChildren": false,
+  "defaultSizing": { "widthMode": "fixed", "heightMode": "hug" },
+  "props": {
+    "items": { "type": "string[]", "default": ["Option 1", "Option 2", "Option 3"], "description": "Static options list (used when optionTable is not set)" },
+    "optionTable": { "type": "string", "default": "", "description": "DB table to populate options from (overrides items when set)" },
+    "optionField": { "type": "string", "when": "optionTable !== ''", "description": "Table column to use as display text for each option" },
+    "optionFilterField": { "type": "string", "description": "Filter options by this field" },
+    "optionFilterValue": { "type": "string", "description": "Filter value or {{template}}" },
+    "width": { "type": "number", "default": 150, "description": "Width in px (when sizing.widthMode is 'fixed')" },
+    "selectedIndex": { "type": "number", "default": 0, "description": "Zero-based index of the default selection" },
+    "textColor": { "type": "color", "default": "" },
+    "borderColor": { "type": "color", "default": "" },
+    "bgColor": { "type": "color", "default": "" },
+    "dataSourceType": { "type": "enum", "values": ["manual", "database"], "default": "manual", "description": "Source for the options list" },
+    "dataField": { "type": "string", "description": "Form field to save the selected value to" },
+    "sizing": { "$ref": "schemas/component-node.schema.json#/definitions/SizingConfig" }
+  },
+  "notes": [
+    "Selector and ComboBox are the same component. Both type names are accepted.",
+    "When optionTable is set, options are populated from that DB table at runtime.",
+    "Must be inside a Form to write selected value back to the database via dataField."
+  ],
+  "examples": [
+    {
+      "description": "Static dropdown inside a form",
+      "json": {
+        "id": "sel-category",
+        "type": "Selector",
+        "props": {
+          "items": ["Electronics", "Clothing", "Books"],
+          "dataField": "category",
+          "sizing": { "widthMode": "fill", "heightMode": "hug" }
+        },
+        "children": []
+      }
+    },
+    {
+      "description": "DB-populated dropdown",
+      "json": {
+        "id": "sel-product",
+        "type": "Selector",
+        "props": {
+          "optionTable": "Categories",
+          "optionField": "name",
+          "dataField": "categoryId",
+          "sizing": { "widthMode": "fill", "heightMode": "hug" }
+        },
+        "children": []
+      }
+    }
+  ]
+}

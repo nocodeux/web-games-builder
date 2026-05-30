@@ -1,0 +1,15 @@
+{
+  "name": "tuify-docs-mcp",
+  "version": "1.0.0",
+  "description": "MCP server exposing TUIFY platform documentation: component specs, schemas, and tutorials",
+  "type": "module",
+  "bin": {
+    "tuify-docs-mcp": "./server.js"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  }
+}

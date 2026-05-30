@@ -1,0 +1,95 @@
+{
+  "type": "Text",
+  "description": "Display text with optional formatting tags, database binding, game HUD binding, and navigation actions",
+  "category": "display",
+  "canHaveChildren": false,
+  "defaultSizing": { "widthMode": "hug", "heightMode": "hug" },
+  "props": {
+    "text": {
+      "type": "string",
+      "default": "Text1",
+      "description": "Text content. Supports inline formatting tags: [b]bold[/b], [i]italic[/i], [u]underline[/u], [s]strikethrough[/s], [sup]superscript[/sup], [sub]subscript[/sub]. Supports {{fieldName}} template variables when inside a DataRepeater."
+    },
+    "textColor": { "type": "color", "default": "", "description": "Text color (hex). Empty = theme --text var" },
+    "fontSize": { "type": "number", "default": 12, "description": "Font size in px" },
+    "alignment": { "type": "enum", "values": ["left", "center", "right"], "default": "left" },
+    "linkUrl": { "type": "string", "default": "", "description": "Makes the text a hyperlink. Set href here." },
+    "action": {
+      "type": "enum",
+      "values": ["none", "screen", "overlay", "external", "email", "level"],
+      "default": "none",
+      "description": "Click action (same as Button). Use 'screen' to navigate when clicked."
+    },
+    "targetScreenId": { "type": "string", "when": "action === 'screen'" },
+    "staggered": { "type": "boolean", "default": false, "when": "action === 'screen'" },
+    "targetOverlayId": { "type": "string", "when": "action === 'overlay'" },
+    "href": { "type": "string", "when": "action === 'external'" },
+    "mailto": { "type": "string", "when": "action === 'email'" },
+    "targetLevelId": { "type": "string", "when": "action === 'level'" },
+    "width": { "type": "number|string", "default": "auto", "description": "Width in px or 'auto'. Prefer sizing.widthMode instead." },
+    "bindTo": {
+      "type": "enum",
+      "values": ["", "score", "lives", "coins", "timer", "xp", "xpLevel", "wave"],
+      "default": "",
+      "description": "GAME HUD BINDING. Binds this text to a live game value. Only available in game-mode screens (kind='world'). Put {value} placeholder in 'text' prop. e.g. text='SCORE: {value}', bindTo='score'"
+    },
+    "dataSourceType": { "type": "enum", "values": ["manual", "database"], "default": "manual" },
+    "dataSourceTable": { "type": "string", "when": "dataSourceType === 'database'" },
+    "dataFilterField": { "type": "string" },
+    "dataFilterValue": { "type": "string" },
+    "dataField": { "type": "string", "description": "DB field to display as text" },
+    "requireLogin": { "type": "boolean", "default": false, "description": "If true, hides content until user is authenticated" },
+    "sizing": { "$ref": "schemas/component-node.schema.json#/definitions/SizingConfig" }
+  },
+  "notes": [
+    "Use {{fieldName}} inside 'text' when the Text is a child of DataRepeater — it will be replaced with the record's field value.",
+    "bindTo is only for game screens. The 'text' prop should include {value} as placeholder: 'SCORE: {value}'.",
+    "For large bold headings use fontSize 20-32, alignment='center'."
+  ],
+  "examples": [
+    {
+      "description": "Section heading",
+      "json": {
+        "id": "txt-heading",
+        "type": "Text",
+        "props": {
+          "text": "MY RETRO BLOG",
+          "fontSize": 24,
+          "alignment": "center",
+          "textColor": "var(--accent)",
+          "sizing": { "widthMode": "fill", "heightMode": "hug" }
+        },
+        "children": []
+      }
+    },
+    {
+      "description": "Game score HUD label",
+      "json": {
+        "id": "txt-score",
+        "type": "Text",
+        "props": {
+          "text": "SCORE: {value}",
+          "fontSize": 14,
+          "bindTo": "score",
+          "sizing": { "widthMode": "hug", "heightMode": "hug" }
+        },
+        "children": []
+      }
+    },
+    {
+      "description": "DB-bound label inside DataRepeater (shows post title)",
+      "json": {
+        "id": "txt-title",
+        "type": "Text",
+        "props": {
+          "text": "{{Title}}",
+          "fontSize": 14,
+          "dataSourceType": "database",
+          "dataField": "Title",
+          "sizing": { "widthMode": "fill", "heightMode": "hug" }
+        },
+        "children": []
+      }
+    }
+  ]
+}

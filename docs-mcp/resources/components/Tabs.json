@@ -1,0 +1,33 @@
+{
+  "type": "Tabs",
+  "description": "Tabbed container. Defines multiple tabs; each tab panel can hold child components. Only one tab is visible at a time.",
+  "category": "layout",
+  "canHaveChildren": true,
+  "defaultSizing": { "widthMode": "fill", "heightMode": "hug" },
+  "props": {
+    "tabs": {
+      "type": "array",
+      "description": "Tab definitions. Each tab has an id and label.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "description": "Tab ID (matches children grouping)" },
+          "label": { "type": "string", "description": "Tab button label" }
+        }
+      },
+      "default": [
+        { "id": "tab1", "label": "Tab 1" },
+        { "id": "tab2", "label": "Tab 2" }
+      ]
+    },
+    "layout": {
+      "type": "LayoutConfig",
+      "default": { "direction": "column", "gap": 8 }
+    },
+    "sizing": { "$ref": "schemas/component-node.schema.json#/definitions/SizingConfig" }
+  },
+  "notes": [
+    "Children added to a Tabs component are placed inside the active tab panel.",
+    "Tab switching is handled automatically by the runtime."
+  ]
+}

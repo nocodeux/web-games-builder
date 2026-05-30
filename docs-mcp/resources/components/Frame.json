@@ -1,0 +1,54 @@
+{
+  "type": "Frame",
+  "description": "Bordered container with a title bar. Renders a box with a single/double/dashed border — the TUI aesthetic building block. Can also bind its title to a database field.",
+  "category": "layout",
+  "canHaveChildren": true,
+  "defaultSizing": { "widthMode": "fixed", "heightMode": "hug" },
+  "props": {
+    "title": { "type": "string", "default": "Frame1", "description": "Title displayed in the top border of the frame" },
+    "width": { "type": "number", "default": 300, "description": "Width in px (when sizing.widthMode is 'fixed')" },
+    "height": { "type": "number|string", "default": "", "description": "Height in px or empty for auto. Empty = hug content." },
+    "borderStyle": { "type": "enum", "values": ["single", "double", "dashed"], "default": "single", "description": "ASCII border style" },
+    "bgColor": { "type": "color", "default": "", "description": "Background fill color" },
+    "textColor": { "type": "color", "default": "", "description": "Text/border color" },
+    "borderColor": { "type": "color", "default": "", "description": "Border color override" },
+    "fontSize": { "type": "number", "default": 12, "description": "Font size for content text inside the frame" },
+    "alignment": { "type": "enum", "values": ["left", "center", "right"], "default": "left", "description": "Content text alignment" },
+    "layout": {
+      "type": "LayoutConfig",
+      "description": "Flex layout for children inside the frame"
+    },
+    "dataSourceType": { "type": "enum", "values": ["manual", "database"], "default": "manual" },
+    "dataField": { "type": "string", "description": "Binds the frame title to a DB field (when inside DataRepeater)" },
+    "sizing": { "$ref": "schemas/component-node.schema.json#/definitions/SizingConfig" }
+  },
+  "examples": [
+    {
+      "description": "A card-style frame for a blog post",
+      "json": {
+        "id": "frame-post",
+        "type": "Frame",
+        "props": {
+          "title": "POST",
+          "borderStyle": "single",
+          "layout": { "direction": "column", "gap": 8, "align": "flex-start", "justify": "flex-start", "paddingTop": 8, "paddingLeft": 8, "paddingRight": 8, "paddingBottom": 8 },
+          "sizing": { "widthMode": "fill", "heightMode": "hug" }
+        },
+        "children": [
+          {
+            "id": "txt-post-title",
+            "type": "Text",
+            "props": { "text": "{{Title}}", "fontSize": 14, "dataSourceType": "database", "dataField": "Title", "sizing": { "widthMode": "fill", "heightMode": "hug" } },
+            "children": []
+          },
+          {
+            "id": "txt-post-desc",
+            "type": "Text",
+            "props": { "text": "{{Description}}", "fontSize": 11, "dataSourceType": "database", "dataField": "Description", "sizing": { "widthMode": "fill", "heightMode": "hug" } },
+            "children": []
+          }
+        ]
+      }
+    }
+  ]
+}

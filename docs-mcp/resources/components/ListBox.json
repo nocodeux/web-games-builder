@@ -1,0 +1,22 @@
+{
+  "type": "ListBox",
+  "description": "Scrollable list of options from a database table. Supports single and multi-selection. Useful for category filters, item selectors, and data pickers.",
+  "category": "input",
+  "canHaveChildren": false,
+  "defaultSizing": { "widthMode": "fixed", "heightMode": "fixed" },
+  "props": {
+    "optionTable": { "type": "string", "description": "DB table to populate the list from" },
+    "optionField": { "type": "string", "description": "Column to display as list item text" },
+    "optionFilterField": { "type": "string", "description": "Filter column" },
+    "optionFilterValue": { "type": "string", "description": "Filter value or {{template}}" },
+    "width": { "type": "number", "default": 150 },
+    "height": { "type": "number", "default": 100, "description": "Fixed height of the list box in px" },
+    "multiSelect": { "type": "boolean", "default": false, "description": "Allow selecting multiple items" },
+    "textColor": { "type": "color", "default": "" },
+    "borderColor": { "type": "color", "default": "" },
+    "bgColor": { "type": "color", "default": "" },
+    "dataSourceType": { "type": "enum", "values": ["manual", "database"], "default": "manual" },
+    "dataField": { "type": "string", "description": "Form field to bind selection to" },
+    "sizing": { "$ref": "schemas/component-node.schema.json#/definitions/SizingConfig" }
+  }
+}

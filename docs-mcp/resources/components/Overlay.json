@@ -1,0 +1,64 @@
+{
+  "type": "Overlay",
+  "description": "Modal overlay/popup panel. Triggered by a Button with action='overlay'. Renders on top of the current screen. Useful for confirmations, menus, and detail views.",
+  "category": "layout",
+  "canHaveChildren": true,
+  "defaultSizing": { "widthMode": "fixed", "heightMode": "hug" },
+  "props": {
+    "title": { "type": "string", "default": "Overlay1", "description": "Overlay panel title (displayed in header)" },
+    "layout": {
+      "type": "LayoutConfig",
+      "default": { "direction": "column", "gap": 8, "align": "stretch", "justify": "flex-start" }
+    },
+    "sizing": { "$ref": "schemas/component-node.schema.json#/definitions/SizingConfig" }
+  },
+  "notes": [
+    "Overlays are defined at the screen level alongside regular components.",
+    "A Button with action='overlay' and targetOverlayId pointing to this component's id will open it.",
+    "To close an overlay, add a Button with action='screen' pointing to the current screen or use action='overlay' with a dismiss target."
+  ],
+  "examples": [
+    {
+      "description": "Confirmation dialog overlay",
+      "json": {
+        "id": "overlay-confirm",
+        "type": "Overlay",
+        "props": {
+          "title": "CONFIRM",
+          "layout": { "direction": "column", "gap": 12, "align": "center", "justify": "center", "paddingTop": 16, "paddingLeft": 16, "paddingRight": 16, "paddingBottom": 16 },
+          "sizing": { "widthMode": "fixed", "heightMode": "hug" }
+        },
+        "children": [
+          {
+            "id": "txt-confirm",
+            "type": "Text",
+            "props": { "text": "Are you sure?", "fontSize": 14, "alignment": "center", "sizing": { "widthMode": "fill", "heightMode": "hug" } },
+            "children": []
+          },
+          {
+            "id": "row-btns",
+            "type": "Row",
+            "props": {
+              "layout": { "direction": "row", "gap": 8, "justify": "center", "align": "center" },
+              "sizing": { "widthMode": "fill", "heightMode": "hug" }
+            },
+            "children": [
+              {
+                "id": "btn-yes",
+                "type": "Button",
+                "props": { "text": "YES", "action": "screen", "targetScreenId": "screen-home", "sizing": { "widthMode": "hug", "heightMode": "hug" } },
+                "children": []
+              },
+              {
+                "id": "btn-no",
+                "type": "Button",
+                "props": { "text": "NO", "action": "screen", "targetScreenId": "__close_overlay__", "sizing": { "widthMode": "hug", "heightMode": "hug" } },
+                "children": []
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

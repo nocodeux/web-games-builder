@@ -1,0 +1,15 @@
+{
+  "type": "CheckBox",
+  "description": "Toggle checkbox with label. Can be statically checked or bound to a DB boolean column via dataField inside a Form.",
+  "category": "input",
+  "canHaveChildren": false,
+  "defaultSizing": { "widthMode": "hug", "heightMode": "hug" },
+  "props": {
+    "text": { "type": "string", "default": "CheckBox1", "description": "Label text next to the checkbox" },
+    "checked": { "type": "boolean", "default": false, "description": "Static checked state (when not DB-bound)" },
+    "textColor": { "type": "color", "default": "" },
+    "dataSourceType": { "type": "enum", "values": ["manual", "database"], "default": "manual" },
+    "dataField": { "type": "string", "description": "DB boolean column to bind to (inside a Form)" },
+    "sizing": { "$ref": "schemas/component-node.schema.json#/definitions/SizingConfig" }
+  }
+}

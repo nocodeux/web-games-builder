@@ -1,0 +1,78 @@
+{
+  "type": "Row",
+  "description": "Flex layout container. The primary building block for organizing components horizontally or vertically. Supports background color and image.",
+  "category": "layout",
+  "canHaveChildren": true,
+  "defaultSizing": { "widthMode": "fill", "heightMode": "hug" },
+  "props": {
+    "bgColor": { "type": "color", "default": "", "description": "Background fill color (hex). Empty = transparent" },
+    "bgImage": { "type": "string", "default": "", "description": "Background image URL or data URL" },
+    "bgImageFit": { "type": "enum", "values": ["cover", "contain", "fill", "tile"], "default": "cover", "when": "bgImage !== ''", "description": "How the background image is sized" },
+    "layout": {
+      "type": "LayoutConfig",
+      "description": "Flex layout configuration for children",
+      "default": {
+        "direction": "row",
+        "gap": 8,
+        "align": "flex-start",
+        "justify": "flex-start",
+        "wrap": false,
+        "paddingTop": 0, "paddingRight": 0, "paddingBottom": 0, "paddingLeft": 0
+      }
+    },
+    "sizing": { "$ref": "schemas/component-node.schema.json#/definitions/SizingConfig" }
+  },
+  "layoutConfig": {
+    "direction": { "type": "enum", "values": ["row", "column"], "default": "row", "description": "Lay children horizontally (row) or vertically (column)" },
+    "gap": { "type": "number", "default": 8, "description": "Gap between children in px" },
+    "align": { "type": "enum", "values": ["flex-start", "center", "flex-end", "stretch"], "default": "flex-start", "description": "Cross-axis alignment of children" },
+    "justify": { "type": "enum", "values": ["flex-start", "center", "flex-end", "space-between", "space-around"], "default": "flex-start", "description": "Main-axis distribution of children" },
+    "wrap": { "type": "boolean", "default": false, "description": "Allow children to wrap to next line" },
+    "paddingTop": { "type": "number", "default": 0 },
+    "paddingRight": { "type": "number", "default": 0 },
+    "paddingBottom": { "type": "number", "default": 0 },
+    "paddingLeft": { "type": "number", "default": 0 }
+  },
+  "notes": [
+    "Row is the most commonly used container. Use layout.direction='column' for vertical stacks.",
+    "Top-level rows on a screen are automatically Row-like containers — you only need a Row component when nesting containers.",
+    "Use sizing.widthMode='fill' to make the row span the full width of its parent.",
+    "Children with sizing.widthMode='fill' expand to fill available space."
+  ],
+  "examples": [
+    {
+      "description": "Horizontal header bar with logo and nav button",
+      "json": {
+        "id": "row-header",
+        "type": "Row",
+        "props": {
+          "layout": {
+            "direction": "row",
+            "justify": "space-between",
+            "align": "center",
+            "paddingTop": 16,
+            "paddingBottom": 16,
+            "paddingLeft": 16,
+            "paddingRight": 16,
+            "gap": 8
+          },
+          "sizing": { "widthMode": "fill", "heightMode": "hug" }
+        },
+        "children": [
+          {
+            "id": "txt-logo",
+            "type": "Text",
+            "props": { "text": "MY APP", "fontSize": 18, "textColor": "var(--accent)", "sizing": { "widthMode": "hug", "heightMode": "hug" } },
+            "children": []
+          },
+          {
+            "id": "btn-menu",
+            "type": "Button",
+            "props": { "text": "MENU", "action": "screen", "targetScreenId": "screen-menu", "sizing": { "widthMode": "hug", "heightMode": "hug" } },
+            "children": []
+          }
+        ]
+      }
+    }
+  ]
+}

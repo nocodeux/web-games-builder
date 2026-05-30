@@ -1,0 +1,313 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TUIFY Project",
+  "description": "Top-level project file format for TUIFY apps and games",
+  "type": "object",
+  "required": ["id", "name", "screens"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique project ID (slug or UUID)"
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable project name"
+    },
+    "theme": {
+      "type": "string",
+      "enum": ["theme-retro", "theme-nano", "theme-bios", "theme-amber"],
+      "default": "theme-retro",
+      "description": "Visual theme applied to all screens. theme-retro=green on black (default), theme-nano=bright green on black, theme-bios=white on blue (BIOS style), theme-amber=amber/orange on black"
+    },
+    "viewMode": {
+      "type": "string",
+      "enum": ["mobile", "desktop"],
+      "default": "mobile",
+      "description": "Canvas viewport width preset"
+    },
+    "currentScreenId": {
+      "type": "string",
+      "description": "ID of the screen shown on first load"
+    },
+    "database": {
+      "$ref": "#/definitions/Database"
+    },
+    "screens": {
+      "type": "array",
+      "description": "All screens in the project. Screens are the top-level navigation units.",
+      "items": { "$ref": "#/definitions/Screen" }
+    }
+  },
+  "definitions": {
+    "Database": {
+      "type": "object",
+      "description": "In-memory database used by DataRepeater, Form, Table, and data-bound components",
+      "properties": {
+        "tables": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "fields"],
+            "properties": {
+              "name": { "type": "string", "description": "Table name (used as reference in components)" },
+              "fields": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["name", "type"],
+                  "properties": {
+                    "name": { "type": "string" },
+                    "type": { "type": "string", "enum": ["INTEGER", "TEXT", "REAL", "BOOLEAN", "BLOB"] },
+                    "primary": { "type": "boolean", "description": "Mark as primary key" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "data": {
+          "type": "object",
+          "description": "Initial data keyed by table name",
+          "additionalProperties": {
+            "type": "array",
+            "items": { "type": "object" }
+          }
+        }
+      }
+    },
+    "Screen": {
+      "type": "object",
+      "required": ["id", "name", "rows"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "kind": {
+          "type": "string",
+          "enum": ["screen", "world"],
+          "default": "screen",
+          "description": "'world' = game level screen rendered with the game runtime"
+        },
+        "rows": {
+          "type": "array",
+          "description": "Top-level layout rows on this screen. Each row is a flex container.",
+          "items": { "$ref": "#/definitions/RowNode" }
+        },
+        "levels": {
+          "type": "array",
+          "description": "Game levels (only for kind='world')",
+          "items": { "$ref": "#/definitions/Level" }
+        },
+        "worldSettings": {
+          "$ref": "#/definitions/WorldSettings",
+          "description": "Game configuration (only for kind='world')"
+        }
+      }
+    },
+    "RowNode": {
+      "type": "object",
+      "description": "A top-level row on a screen. Acts as a flex container for components.",
+      "required": ["id", "children"],
+      "properties": {
+        "id": { "type": "string" },
+        "layout": { "$ref": "#/definitions/LayoutConfig" },
+        "children": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/ComponentNode" }
+        }
+      }
+    },
+    "ComponentNode": {
+      "type": "object",
+      "required": ["id", "type", "props"],
+      "properties": {
+        "id": { "type": "string", "description": "Unique ID within the project" },
+        "type": {
+          "type": "string",
+          "enum": [
+            "Button", "Text", "TextBox", "Input", "CheckBox", "RadioButton",
+            "Shape", "Line", "Image", "PictureBox", "Timer", "Loader",
+            "ComboBox", "Selector", "ListBox", "Table", "Data",
+            "DataRepeater", "Form", "Window", "Row", "Frame",
+            "Tabs", "Overlay", "ScrollBar", "GameEmbed", "EmbedRuntime"
+          ]
+        },
+        "props": {
+          "type": "object",
+          "description": "Component-specific props. See individual component schemas."
+        },
+        "children": {
+          "type": "array",
+          "description": "Child components (for containers: Window, Row, Frame, Form, DataRepeater, Tabs, Overlay)",
+          "items": { "$ref": "#/definitions/ComponentNode" }
+        }
+      }
+    },
+    "LayoutConfig": {
+      "type": "object",
+      "description": "Flexbox layout configuration for container components",
+      "properties": {
+        "direction": { "type": "string", "enum": ["row", "column"], "default": "row" },
+        "gap": { "type": "number", "default": 8, "description": "Spacing between children in px" },
+        "align": {
+          "type": "string",
+          "enum": ["flex-start", "center", "flex-end", "stretch"],
+          "default": "flex-start",
+          "description": "Cross-axis alignment"
+        },
+        "justify": {
+          "type": "string",
+          "enum": ["flex-start", "center", "flex-end", "space-between", "space-around"],
+          "default": "flex-start",
+          "description": "Main-axis justification"
+        },
+        "wrap": { "type": "boolean", "default": false },
+        "paddingTop": { "type": "number", "default": 0 },
+        "paddingRight": { "type": "number", "default": 0 },
+        "paddingBottom": { "type": "number", "default": 0 },
+        "paddingLeft": { "type": "number", "default": 0 }
+      }
+    },
+    "SizingConfig": {
+      "type": "object",
+      "description": "Controls how a component sizes itself within its parent flex container",
+      "properties": {
+        "widthMode": {
+          "type": "string",
+          "enum": ["hug", "fill", "fixed"],
+          "description": "hug=wrap content, fill=stretch to parent width, fixed=explicit px width"
+        },
+        "heightMode": {
+          "type": "string",
+          "enum": ["hug", "fill", "fixed"],
+          "description": "hug=wrap content, fill=stretch to parent height, fixed=explicit px height"
+        }
+      }
+    },
+    "WorldSettings": {
+      "type": "object",
+      "description": "Game configuration applied to all levels in a world screen",
+      "properties": {
+        "genre": { "type": "string", "description": "Primary genre (e.g. 'platformer', 'topdown', 'arcade')" },
+        "subtype": { "type": "string", "description": "Genre subtype (e.g. 'classic-mario', 'vampire-survivors')" },
+        "hud": {
+          "type": "object",
+          "description": "HUD elements to show during gameplay",
+          "properties": {
+            "showScore": { "type": "boolean" },
+            "showLives": { "type": "boolean" },
+            "showCoins": { "type": "boolean" },
+            "showTimer": { "type": "boolean" },
+            "showXP": { "type": "boolean" },
+            "showWave": { "type": "boolean" }
+          }
+        },
+        "mobileControls": {
+          "type": "string",
+          "enum": ["platformer", "topdown-action", "arcade-shooter", "tap-only", "none"],
+          "description": "Mobile virtual gamepad layout"
+        }
+      }
+    },
+    "Level": {
+      "type": "object",
+      "description": "A single game level within a world screen",
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "gravity": { "type": "number", "description": "Pixels/s². 0=top-down, 1200=platformer default" },
+        "width": { "type": "number", "description": "Level width in pixels" },
+        "height": { "type": "number", "description": "Level height in pixels" },
+        "background": { "type": "string", "description": "Background color or image URL" },
+        "entities": {
+          "type": "array",
+          "description": "All entities placed in this level",
+          "items": { "$ref": "#/definitions/Entity" }
+        },
+        "tileLayers": {
+          "type": "array",
+          "description": "Tile map layers",
+          "items": { "$ref": "#/definitions/TileLayer" }
+        },
+        "colliderShapes": {
+          "type": "array",
+          "description": "Segment collision shapes (slopes, custom walls, one-way platforms)",
+          "items": { "$ref": "#/definitions/ColliderShape" }
+        }
+      }
+    },
+    "Entity": {
+      "type": "object",
+      "description": "A game object placed in a level (player, enemy, collectible, etc.)",
+      "required": ["id", "role"],
+      "properties": {
+        "id": { "type": "string" },
+        "role": {
+          "type": "string",
+          "enum": ["player", "enemy", "collectible", "platform", "npc", "projectile", "hazard"],
+          "description": "Entity role in the game"
+        },
+        "x": { "type": "number", "description": "World X position in pixels" },
+        "y": { "type": "number", "description": "World Y position in pixels" },
+        "width": { "type": "number", "description": "Collision width in pixels" },
+        "height": { "type": "number", "description": "Collision height in pixels" },
+        "stats": {
+          "type": "object",
+          "properties": {
+            "hp": { "type": "number", "description": "Hit points" },
+            "speed": { "type": "number", "description": "Move speed (px/s)" },
+            "runSpeed": { "type": "number", "description": "Dash/run speed (px/s)" },
+            "jumpHeight": { "type": "number", "description": "Jump height in tiles" },
+            "damage": { "type": "number" }
+          }
+        },
+        "animations": {
+          "type": "array",
+          "description": "Animation slots mapping states to sprite sheet animations",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string", "description": "State name (e.g. 'idle', 'walk', 'jump', 'attack')" },
+              "spriteSheetId": { "type": "string" },
+              "animName": { "type": "string", "description": "Animation name within the sprite sheet" },
+              "renderH": { "type": "number", "description": "Override render height (px)" },
+              "spriteOffsetY": { "type": "number", "description": "Vertical sprite offset (px)" }
+            }
+          }
+        },
+        "defaultAnimation": { "type": "string", "description": "Default animation slot name" }
+      }
+    },
+    "TileLayer": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "tilesetId": { "type": "string" },
+        "tileSize": { "type": "number", "description": "Tile size in pixels (square)" },
+        "data": {
+          "type": "array",
+          "description": "2D array of tile IDs (0=empty)",
+          "items": { "type": "array", "items": { "type": "number" } }
+        },
+        "solid": { "type": "boolean", "description": "Whether tiles in this layer have solid collision" },
+        "zIndex": { "type": "number", "description": "Render order" }
+      }
+    },
+    "ColliderShape": {
+      "type": "object",
+      "description": "A polyline used for slope/wall collision not covered by tile grid",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "points": {
+          "type": "array",
+          "description": "Array of [x, y] world-pixel coordinates",
+          "items": { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 }
+        },
+        "oneWay": { "type": "boolean", "default": false, "description": "If true, entities can jump through from below (one-way platform)" }
+      }
+    }
+  }
+}

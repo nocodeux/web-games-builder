@@ -1,0 +1,38 @@
+{
+  "type": "GameEmbed",
+  "description": "Embeds a game level player inline within a UI screen. Renders a TUIFY game world inside a fixed-size canvas within regular screen layouts.",
+  "category": "game",
+  "canHaveChildren": false,
+  "defaultSizing": { "widthMode": "fixed", "heightMode": "fixed" },
+  "props": {
+    "width": { "type": "number", "default": 360, "description": "Embed width in px" },
+    "height": { "type": "number", "default": 240, "description": "Embed height in px" },
+    "targetWorldId": { "type": "string", "description": "ID of a world-kind screen to load as the game source" },
+    "autoPlay": { "type": "boolean", "default": true, "description": "Start the game immediately on load" },
+    "showControls": { "type": "boolean", "default": true, "description": "Show mobile touch controls overlay" },
+    "sizing": { "$ref": "schemas/component-node.schema.json#/definitions/SizingConfig" }
+  },
+  "notes": [
+    "GameEmbed is distinct from a 'world' screen kind — it embeds a game preview inside a normal UI screen.",
+    "The targetWorldId must reference an existing screen with kind='world'.",
+    "For full-screen game play, use action='level' on a Button to navigate to a world screen instead."
+  ],
+  "examples": [
+    {
+      "description": "Embedded game preview on a landing screen",
+      "json": {
+        "id": "embed-preview",
+        "type": "GameEmbed",
+        "props": {
+          "width": 360,
+          "height": 240,
+          "targetWorldId": "screen-world-1",
+          "autoPlay": true,
+          "showControls": false,
+          "sizing": { "widthMode": "fixed", "heightMode": "fixed" }
+        },
+        "children": []
+      }
+    }
+  ]
+}

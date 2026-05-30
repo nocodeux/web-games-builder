@@ -1,0 +1,49 @@
+{
+  "type": "Image",
+  "aliases": ["PictureBox"],
+  "description": "Image display component. Supports URL, uploaded files, data URLs, icon library (SVG mask), and database binding. Can show different images for portrait/landscape in game mode.",
+  "category": "display",
+  "canHaveChildren": false,
+  "defaultSizing": { "widthMode": "fixed", "heightMode": "fixed" },
+  "props": {
+    "src": { "type": "string", "default": "", "description": "Image source URL, data URL, or asset path" },
+    "width": { "type": "number", "default": 80, "description": "Width in px (when sizing.widthMode is 'fixed')" },
+    "height": { "type": "number", "default": 80, "description": "Height in px (when sizing.heightMode is 'fixed')" },
+    "alt": { "type": "string", "default": "Image", "description": "Alt text for accessibility" },
+    "keepAspect": { "type": "boolean", "default": false, "description": "Maintain aspect ratio when resizing (both dimensions must be fixed)" },
+    "aspectRatio": { "type": "number", "description": "Aspect ratio (width/height). Auto-set when image is uploaded." },
+    "borderThickness": { "type": "number", "default": 1, "description": "Border width in px" },
+    "borderColor": { "type": "color", "default": "", "description": "Border color (empty = no border)" },
+    "iconSrc": { "type": "string", "default": "", "description": "SVG content from icon library (overrides src when set)" },
+    "iconColor": { "type": "color", "default": "", "description": "Color applied to the SVG icon mask" },
+    "dataSourceType": { "type": "enum", "values": ["manual", "database"], "default": "manual" },
+    "dataField": { "type": "string", "description": "DB column (BLOB type) to load image from" },
+    "srcPortrait": { "type": "string", "description": "GAME MODE: Override src when device is in portrait orientation" },
+    "srcLandscape": { "type": "string", "description": "GAME MODE: Override src when device is in landscape orientation" },
+    "sizing": { "$ref": "schemas/component-node.schema.json#/definitions/SizingConfig" }
+  },
+  "notes": [
+    "PictureBox is an alias — use 'Image' as the type name.",
+    "For icons from the built-in library, set iconSrc to the SVG string and iconColor for the color.",
+    "To bind to a database image: set dataSourceType='database' and dataField to a BLOB column.",
+    "srcPortrait and srcLandscape only take effect in game-mode screens."
+  ],
+  "examples": [
+    {
+      "description": "Profile avatar image",
+      "json": {
+        "id": "img-avatar",
+        "type": "Image",
+        "props": {
+          "src": "https://example.com/avatar.png",
+          "width": 64,
+          "height": 64,
+          "keepAspect": true,
+          "aspectRatio": 1,
+          "sizing": { "widthMode": "fixed", "heightMode": "fixed" }
+        },
+        "children": []
+      }
+    }
+  ]
+}

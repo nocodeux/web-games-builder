@@ -1,0 +1,75 @@
+{
+  "type": "Input",
+  "aliases": ["TextBox"],
+  "description": "Text input field. Use inside a Form component to bind to a database table field. Supports OTP mode for PIN/code inputs.",
+  "category": "input",
+  "canHaveChildren": false,
+  "defaultSizing": { "widthMode": "fixed", "heightMode": "hug" },
+  "props": {
+    "label": { "type": "string", "default": "", "description": "Label shown above the input field (e.g. 'EMAIL', 'USERNAME')" },
+    "placeholder": { "type": "string", "default": "Enter text...", "description": "Placeholder text when field is empty" },
+    "width": { "type": "number", "default": 150, "description": "Width in px (when sizing.widthMode is 'fixed')" },
+    "inputType": { "type": "enum", "values": ["text", "password", "number", "email"], "default": "text", "description": "HTML input type. Use 'password' for password fields." },
+    "isOTP": { "type": "boolean", "default": false, "description": "Enable OTP/PIN mode — shows digit boxes instead of a text field" },
+    "digits": { "type": "enum", "values": [4, 6], "default": 4, "when": "isOTP === true", "description": "Number of OTP digits" },
+    "readOnly": { "type": "boolean", "default": false, "description": "Prevents user editing" },
+    "disabled": { "type": "boolean", "default": false, "description": "Grays out the field" },
+    "textColor": { "type": "color", "default": "" },
+    "borderColor": { "type": "color", "default": "" },
+    "bgColor": { "type": "color", "default": "" },
+    "dataField": { "type": "string", "description": "The Form's source/target table field this input binds to. Required when inside a Form." },
+    "sizing": { "$ref": "schemas/component-node.schema.json#/definitions/SizingConfig" }
+  },
+  "notes": [
+    "Input and TextBox are the same component. Both type names are accepted.",
+    "Must be inside a Form component to participate in data binding and form submission.",
+    "Set dataField to the table column name (e.g. 'email', 'name', 'password').",
+    "For full-width inputs use sizing.widthMode='fill'."
+  ],
+  "examples": [
+    {
+      "description": "Email input inside a login form",
+      "json": {
+        "id": "input-email",
+        "type": "Input",
+        "props": {
+          "label": "EMAIL",
+          "placeholder": "user@example.com",
+          "inputType": "email",
+          "dataField": "email",
+          "sizing": { "widthMode": "fill", "heightMode": "hug" }
+        },
+        "children": []
+      }
+    },
+    {
+      "description": "Password input",
+      "json": {
+        "id": "input-pass",
+        "type": "Input",
+        "props": {
+          "label": "PASSWORD",
+          "inputType": "password",
+          "dataField": "password",
+          "sizing": { "widthMode": "fill", "heightMode": "hug" }
+        },
+        "children": []
+      }
+    },
+    {
+      "description": "4-digit OTP / PIN input",
+      "json": {
+        "id": "input-otp",
+        "type": "Input",
+        "props": {
+          "label": "ENTER CODE",
+          "isOTP": true,
+          "digits": 4,
+          "dataField": "pin",
+          "sizing": { "widthMode": "hug", "heightMode": "hug" }
+        },
+        "children": []
+      }
+    }
+  ]
+}

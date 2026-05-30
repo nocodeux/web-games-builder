@@ -1,0 +1,19 @@
+{
+  "type": "RadioButton",
+  "description": "Radio button for mutually exclusive selections within a group. Group multiple RadioButtons with the same 'group' value.",
+  "category": "input",
+  "canHaveChildren": false,
+  "defaultSizing": { "widthMode": "hug", "heightMode": "hug" },
+  "props": {
+    "text": { "type": "string", "default": "RadioButton1", "description": "Label text" },
+    "group": { "type": "string", "default": "group1", "description": "Group name — RadioButtons with the same group are mutually exclusive" },
+    "checked": { "type": "boolean", "default": false, "description": "Whether this option is selected by default" },
+    "textColor": { "type": "color", "default": "" },
+    "dataSourceType": { "type": "enum", "values": ["manual", "database"], "default": "manual" },
+    "dataField": { "type": "string", "description": "DB field to bind selected value to (inside a Form)" },
+    "sizing": { "$ref": "schemas/component-node.schema.json#/definitions/SizingConfig" }
+  },
+  "notes": [
+    "Place multiple RadioButtons with the same 'group' string inside a Row or Frame to create a radio group."
+  ]
+}

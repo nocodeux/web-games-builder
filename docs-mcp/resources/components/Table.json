@@ -1,0 +1,62 @@
+{
+  "type": "Table",
+  "description": "Data grid with configurable columns. Can display static rows or bind to a database table. Supports headers and striped rows.",
+  "category": "display",
+  "canHaveChildren": false,
+  "defaultSizing": { "widthMode": "fixed", "heightMode": "fixed" },
+  "props": {
+    "width": { "type": "number", "default": 400 },
+    "height": { "type": "number", "default": 200 },
+    "showHeaders": { "type": "boolean", "default": true, "description": "Show column header row" },
+    "stripedRows": { "type": "boolean", "default": true, "description": "Alternate row background colors" },
+    "textColor": { "type": "color", "default": "" },
+    "borderColor": { "type": "color", "default": "" },
+    "headerBgColor": { "type": "color", "default": "", "description": "Header row background color" },
+    "dataSourceType": { "type": "enum", "values": ["manual", "database"], "default": "manual" },
+    "dataSource": { "type": "string", "when": "dataSourceType === 'database'", "description": "DB table name to load rows from" },
+    "columns": {
+      "type": "array",
+      "description": "Column definitions",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "Column header and data key" },
+          "width": { "type": "number", "default": 80, "description": "Column width in px" }
+        }
+      }
+    },
+    "rows": {
+      "type": "array",
+      "description": "Static row data (when dataSourceType='manual'). Each object's keys must match column names.",
+      "items": { "type": "object" }
+    },
+    "sizing": { "$ref": "schemas/component-node.schema.json#/definitions/SizingConfig" }
+  },
+  "examples": [
+    {
+      "description": "Static 3-column table",
+      "json": {
+        "id": "tbl-users",
+        "type": "Table",
+        "props": {
+          "width": 400,
+          "height": 200,
+          "showHeaders": true,
+          "stripedRows": true,
+          "dataSourceType": "manual",
+          "columns": [
+            { "name": "Name", "width": 150 },
+            { "name": "Email", "width": 180 },
+            { "name": "Role", "width": 70 }
+          ],
+          "rows": [
+            { "Name": "Alice", "Email": "alice@example.com", "Role": "Admin" },
+            { "Name": "Bob", "Email": "bob@example.com", "Role": "User" }
+          ],
+          "sizing": { "widthMode": "fixed", "heightMode": "fixed" }
+        },
+        "children": []
+      }
+    }
+  ]
+}

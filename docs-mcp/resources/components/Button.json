@@ -1,0 +1,96 @@
+{
+  "type": "Button",
+  "description": "Clickable button with optional navigation, form submission, icon support, and sound feedback",
+  "category": "interaction",
+  "canHaveChildren": false,
+  "defaultSizing": { "widthMode": "hug", "heightMode": "hug" },
+  "props": {
+    "text": { "type": "string", "default": "Button1", "description": "Label displayed on the button. Leave empty when using icons only — button auto-sizes to a square." },
+    "variant": {
+      "type": "enum",
+      "values": ["default", "primary", "secondary", "link"],
+      "default": "default",
+      "description": "Visual style. 'default'=border+fill on hover, 'primary'=outline (transparent bg, solid fill on hover/active), 'secondary'=ghost (no border, solid fill on hover/active), 'link'=underline text only"
+    },
+    "bgColor": { "type": "color", "default": "", "description": "Background color (hex). Empty = theme default (transparent)" },
+    "textColor": { "type": "color", "default": "", "description": "Text color (hex). Empty = theme --text var" },
+    "borderColor": { "type": "color", "default": "", "description": "Border color (hex). Empty = theme --text var" },
+    "width": { "type": "number", "default": 80, "description": "Width in px. Only used when sizing.widthMode is 'fixed'" },
+    "disabled": { "type": "boolean", "default": false, "description": "Disables click interaction" },
+    "action": {
+      "type": "enum",
+      "values": ["none", "screen", "overlay", "external", "email", "submit", "upload", "level"],
+      "default": "none",
+      "description": "Click action. 'screen'=navigate to screen, 'overlay'=open overlay, 'external'=open URL, 'email'=send email, 'submit'=save form data to DB table, 'level'=navigate to game level"
+    },
+    "targetScreenId": { "type": "string", "when": "action === 'screen'", "description": "ID of the screen to navigate to" },
+    "staggered": { "type": "boolean", "default": false, "when": "action === 'screen'", "description": "Animate transition as overlay (slide-in)" },
+    "targetOverlayId": { "type": "string", "when": "action === 'overlay'", "description": "ID of the overlay component to open" },
+    "href": { "type": "string", "when": "action === 'external'", "description": "External URL (https://...)" },
+    "mailto": { "type": "string", "when": "action === 'email'", "description": "Email address" },
+    "targetLevelId": { "type": "string", "when": "action === 'level'", "description": "ID of the game level to load" },
+    "iconLeftMode": { "type": "enum", "values": ["none", "picker", "url"], "default": "none", "description": "Left icon source" },
+    "iconLeftSrc": { "type": "string", "when": "iconLeftMode === 'picker'", "description": "SVG string from icon picker" },
+    "iconLeftUrl": { "type": "string", "when": "iconLeftMode === 'url'", "description": "Icon image URL" },
+    "iconRightMode": { "type": "enum", "values": ["none", "picker", "url"], "default": "none" },
+    "iconRightSrc": { "type": "string", "when": "iconRightMode === 'picker'" },
+    "iconRightUrl": { "type": "string", "when": "iconRightMode === 'url'" },
+    "iconSize": { "type": "number", "default": 12, "description": "Icon size in px" },
+    "dataSourceType": { "type": "enum", "values": ["manual", "database"], "default": "manual", "description": "Source for the button label text" },
+    "dataSourceTable": { "type": "string", "when": "dataSourceType === 'database'", "description": "DB table to read from" },
+    "dataFilterField": { "type": "string", "description": "Filter field name" },
+    "dataFilterValue": { "type": "string", "description": "Filter value or {{template}}" },
+    "dataField": { "type": "string", "description": "Table field to use as button label" },
+    "sizing": { "$ref": "schemas/component-node.schema.json#/definitions/SizingConfig" }
+  },
+  "notes": [
+    "Colors default to CSS theme variables when empty string. Avoid hardcoding colors unless the design requires it.",
+    "The 'submit' action only works when the Button is inside a Form component.",
+    "The 'level' action only appears in game-mode screens (kind='world').",
+    "Icon-only button (icon set, text empty): automatically renders as a square with aspect-ratio 1/1.",
+    "Variants — default: thin border, fills on hover; primary: outline style (transparent bg), fills solid on hover/active; secondary: ghost (no border), fills solid on hover/active; link: underline only."
+  ],
+  "examples": [
+    {
+      "description": "Simple navigation button",
+      "json": {
+        "id": "btn-go-settings",
+        "type": "Button",
+        "props": {
+          "text": "SETTINGS",
+          "action": "screen",
+          "targetScreenId": "screen-settings",
+          "sizing": { "widthMode": "hug", "heightMode": "hug" }
+        },
+        "children": []
+      }
+    },
+    {
+      "description": "Full-width form submit button",
+      "json": {
+        "id": "btn-save",
+        "type": "Button",
+        "props": {
+          "text": "SAVE",
+          "action": "submit",
+          "sizing": { "widthMode": "fill", "heightMode": "hug" }
+        },
+        "children": []
+      }
+    },
+    {
+      "description": "External link button",
+      "json": {
+        "id": "btn-link",
+        "type": "Button",
+        "props": {
+          "text": "VISIT SITE",
+          "action": "external",
+          "href": "https://tuify.app",
+          "sizing": { "widthMode": "hug", "heightMode": "hug" }
+        },
+        "children": []
+      }
+    }
+  ]
+}

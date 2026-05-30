@@ -10,6 +10,7 @@ export default defineConfig({
       '/api':     { target: 'http://localhost:3002', changeOrigin: true },
       '/uploads': { target: 'http://localhost:3002', changeOrigin: true },
       '/runtime': { target: 'http://localhost:3002', changeOrigin: true },
+      '/docs':    { target: 'http://localhost:3002', changeOrigin: true },
     }
   }
 })

@@ -1,0 +1,11 @@
+{
+  "type": "Loader",
+  "description": "Animated loading indicator. Shows a spinner, dots, progress bar, or bouncing animation.",
+  "category": "display",
+  "canHaveChildren": false,
+  "defaultSizing": { "widthMode": "hug", "heightMode": "hug" },
+  "props": {
+    "loaderType": { "type": "enum", "values": ["spinner", "dots", "bar", "bounce"], "default": "spinner", "description": "Animation style" },
+    "sizing": { "$ref": "schemas/component-node.schema.json#/definitions/SizingConfig" }
+  }
+}
